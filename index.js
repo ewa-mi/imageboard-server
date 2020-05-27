@@ -5,6 +5,10 @@ const imageRouter = require("./routers/image");
 const port = process.env.PORT || 4000;
 const app = express();
 
+//middleware
+const jsonParser = express.json();
+app.use(jsonParser);
+
 app.use("/users", userRouter);
 app.use("/images", imageRouter);
 
