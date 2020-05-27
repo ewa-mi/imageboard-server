@@ -3,13 +3,22 @@ const Image = require("../models").image;
 
 const router = new Router();
 
-router.get("/", async (req, res, next) => {
-  try {
-    const images = await Image.findAll();
-    res.json(images);
-  } catch (e) {
-    next(e);
-  }
+// router.get("/", async (req, res, next) => {
+//   try {
+//     const images = await Image.findAll();
+//     res.json(images);
+//   } catch (e) {
+//     next(e);
+//   }
+// });
+
+router.get("/", (req, res, next) => {
+  const limit = Math.min(parseInt(req.query.limit) || 25, 500);
+  const offset = parseInt(req.query.offset) || 0;
+
+  Image.findAndCountAll({ limit, offset })
+    .then((result) => res.send({ images: result.rows, total: result.count }))
+    .catch((error) => next(error));
 });
 
 router.post("/", async (req, res, next) => {
